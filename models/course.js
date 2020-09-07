@@ -1,4 +1,5 @@
-const { Sequelize } = require(".");
+'use strict';
+const { Sequelize } = require("sequelize");
 
 module.exports = (sequelize) => {
   class Course extends Sequelize.Model {}
@@ -24,15 +25,14 @@ module.exports = (sequelize) => {
     },
     materialsNeeded: {
       type: Sequelize.STRING
-    },
-    userId: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: User,
-        key: 'id'
-      }
     }
   }, { sequelize });
+
+  Course.associate = (models) => {
+    Course.belongsTo(models.User, {
+      foreignKey: 'userId'
+    });
+  }
 
   return Course;
 }
