@@ -113,14 +113,14 @@ router.put('/:id', authenticateUser, asyncHandler(async (req, res, next) => {
     course = await Course.findByPk(req.params.id);
     if (course) {
       // Ensure the authenticated user is the matched course's owner
-      if (course.userId != req.currentUser.id) {
+      if (course.userId == req.currentUser.id) {
+        await course.update(req.body);
+        res.status(204).end();
+      } else {
         const error = new Error("User not authorized to modify this record");
         error.status = 403;
         next(error);
       }
-
-      await course.update(req.body);
-      res.status(204).end();
     } else {
       const error = new Error("Record not found");
       error.status = 500;
@@ -136,14 +136,15 @@ router.delete('/:id', authenticateUser, asyncHandler(async (req, res, next) => {
   const course = await Course.findByPk(req.params.id);
   if (course) {
     // Ensure the authenticated user is the matched course's owner
-    if (course.userId != req.currentUser.id) {
+    console.log(course.userId, req.currentUser.id);
+    if (course.userId == req.currentUser.id) {
+      await course.destroy();
+      res.status(204).end();
+    } else {
       const error = new Error("User not authorized to modify this record");
       error.status = 403;
       next(error);
     }
-    
-    await course.destroy();
-    res.status(204).end();
   } else {
     const error = new Error("Record not found");
     error.status = 500;
