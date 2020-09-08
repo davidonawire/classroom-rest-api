@@ -44,6 +44,15 @@ app.use((err, req, res, next) => {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
   }
 
+  if (err.name === 'SequelizeValidationError') {
+    const errors = err.errors.map(error => error.message).join(', ');
+    err.message = 'Validation errors: ' + errors;
+    err.status = 400;
+  } else if (err.name === 'SequelizeUniqueConstraintError') {
+    err.message = 'Provided email address already registered';
+    err.status = 400;
+  }
+
   res.status(err.status || 500).json({
     message: err.message,
     error: {},

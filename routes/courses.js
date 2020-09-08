@@ -101,7 +101,7 @@ router.post('/', authenticateUser, asyncHandler(async (req, res, next) => {
     const course = await Course.create(req.body);
     res.status(201).location('/api/courses/' + course.id).end();
   } catch (error) {
-    // Handle errors
+    next(error);
   }
   
 }));
@@ -127,7 +127,7 @@ router.put('/:id', authenticateUser, asyncHandler(async (req, res, next) => {
       next(error);
     }
   } catch (error) {
-    // Handle errors
+    next(error);
   }
 }));
 
