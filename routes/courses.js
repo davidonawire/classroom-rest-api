@@ -73,5 +73,16 @@ router.put('/:id', asyncHandler(async (req, res, next) => {
 }));
 
 // DELETE /api/courses/:id 204 - Deletes a course and returns no content
+router.delete('/:id', asyncHandler(async (req, res, next) => {
+  const course = await Course.findByPk(req.params.id);
+  if (course) {
+    await course.destroy();
+    res.status(204).end();
+  } else {
+    const error = new Error("Record not found");
+    error.status = 500;
+    next(error);
+  }
+}));
 
 module.exports = router;
