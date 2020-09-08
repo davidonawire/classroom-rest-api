@@ -26,8 +26,28 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 // GET /api/courses/:id 200 - Returns the course (including the user that owns the course) for the provided course ID
+router.get('/:id', asyncHandler(async (req, res, next) => {
+  const course = await Course.findByPk(req.params.id, {
+    include: {
+      model: User,
+      as: 'Owner'
+    }
+  });
+
+  if (course) {
+    res.json(course);
+  } else {
+    const error = new Error("Record not found");
+    error.status = 500;
+    next(error);
+  }
+}));
 
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
+router.post('/', asyncHandler(async (req, res, next) => {
+  const course = await Course.create(req.body);
+  res.status(201).location('/api/courses/' + course.id).end();
+}));
 
 // PUT /api/courses/:id 204 - Updates a course and returns no content
 
