@@ -52,7 +52,7 @@ app.use((err, req, res, next) => {
 app.set('port', process.env.PORT || 5000);
 
 // Connect to database and start listening on our port
-sequelize.authenticate()
+sequelize.sync()
   .then(() => {
     console.log('Connection to database successful.');
     const server = app.listen(app.get('port'), () => {
