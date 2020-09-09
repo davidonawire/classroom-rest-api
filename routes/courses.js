@@ -108,6 +108,13 @@ router.post('/', authenticateUser, asyncHandler(async (req, res, next) => {
 
 // PUT /api/courses/:id 204 - Updates a course and returns no content
 router.put('/:id', authenticateUser, asyncHandler(async (req, res, next) => {
+  // Check whether we've received an empty req object
+  if (Object.keys(req.body).length === 0) {
+    const error = new Error("Request JSON cannot be empty");
+    error.status = 400;
+    next(error);
+  }
+
   let course;
   try {
     course = await Course.findByPk(req.params.id);

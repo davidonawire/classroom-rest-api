@@ -65,6 +65,13 @@ router.get('/', authenticateUser, asyncHandler(async (req, res) => {
 
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
 router.post('/', asyncHandler(async (req, res, next) => {
+  // Check whether we've received an empty req object
+  if (Object.keys(req.body).length === 0) {
+    const error = new Error("Request JSON cannot be empty");
+    error.status = 400;
+    next(error);
+  }
+
   try {
     const user = req.body;
 
